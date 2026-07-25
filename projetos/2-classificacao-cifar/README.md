@@ -96,28 +96,45 @@ projetos/2-classificacao-cifar/
 
 ## 📝 Relatório do Candidato
 
-👤 **Nome Completo:**
+👤 **Nome Completo:** Raimundo Ferreira do Nascimento Junior
 
 ### 1️⃣ Resumo da Arquitetura do Modelo
 
-Descreva a arquitetura da CNN implementada em `train_model.py` e a estratégia de data augmentation utilizada.
+Foi implementada uma CNN simples, apropriada para Edge AI, composta por 4 blocos convolucionais (Conv2D com 32, 64, 128 e 256 filtros sequencialmente). Cada bloco contém uma camada BatchNormalization (para acelerar e estabilizar o treinamento) e MaxPooling2D (para reduzir a dimensionalidade espacial). O classificador possui uma camada Flatten, seguida de Dropout (0.5) para evitar overfitting, uma camada densa oculta de 128 neurônios e a saída final Softmax de 10 classes. O Data Augmentation foi feito via Sequential Keras integrado diretamente ao input do modelo, aplicando rotação aleatória (RandomRotation), flip horizontal (RandomFlip) e zoom (RandomZoom).
 
 ### 2️⃣ Bibliotecas Utilizadas
 
-Liste as principais bibliotecas utilizadas, preferencialmente com suas versões.
+tensorflow (versão 2.12+) e módulo interno keras para construção e treinamento do modelo.
+
+numpy (versão 1.23+) para manipulação de arrays e processamento da saída da inferência.
+
+os e io/sys nativos do Python.
 
 ### 3️⃣ Técnica de Otimização do Modelo
 
-Explique qual técnica foi utilizada para otimizar o modelo em `optimize_model.py`.
+Foi utilizada a Dynamic Range Quantization (Quantização de Alcance Dinâmico) por meio da flag tf.lite.Optimize.DEFAULT. Essa técnica reduz de forma estática os pesos do modelo de ponto flutuante de 32-bits (float32) para inteiros de 8-bits (int8), reduzindo o tamanho do modelo em cerca de 4x e agilizando a inferência em CPUs, mantendo a ativação operando em float.
 
 ### 4️⃣ Resultados Obtidos
 
-Informe a acurácia de validação obtida e o tamanho dos arquivos `model.h5` e `model.tflite`.
+Acurácia de Validação Final: 0.7420
+
+Tamanho model.h5: 6212.16 KB
+
+Tamanho model.tflite: 532.05 KB
 
 ### 5️⃣ Comentários Adicionais (Opcional)
 
-Dificuldades encontradas, decisões técnicas importantes, limitações do modelo, aprendizados durante o desafio.
+Treinar imagens coloridas (CIFAR-10) apenas em CPU mostrou-se computacionalmente denso. A decisão por limitar a 4 blocos com um limitador no Early Stopping (patience=5) foi vital para que o modelo treinasse em tempo aceitável, atingindo o compromisso ideal entre acurácia e o uso de recursos para um ambiente focado em sistemas embarcados.
 
 ### 6️⃣ Exemplo de Inferência
 
-Cole a saída do terminal ao rodar `run_inference.py` (predito vs. real para as 5+ amostras), e comente brevemente se houve algum caso interessante (acerto ou erro) entre as amostras testadas.
+6️⃣ Exemplo de Inferência
+
+Rodando inferência em 5 amostras usando model.tflite:
+Amostra 1: predito=cat | real=cat
+Amostra 2: predito=ship | real=ship
+Amostra 3: predito=ship | real=ship
+Amostra 4: predito=airplane | real=airplane
+Amostra 5: predito=frog | real=frog
+
+Comentário: O modelo teve um desempenho excelente nas amostras testadas (100% de acerto nas 5 primeiras imagens), demonstrando que a drástica redução de tamanho (de 6.2MB para ~532KB) com a Dynamic Range Quantization não destruiu a capacidade preditiva da rede para essas classes.
