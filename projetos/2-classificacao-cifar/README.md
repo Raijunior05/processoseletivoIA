@@ -104,7 +104,7 @@ Foi implementada uma CNN simples, apropriada para Edge AI, composta por 4 blocos
 
 ### 2️⃣ Bibliotecas Utilizadas
 
-tensorflow (versão 2.12+) e módulo interno keras para construção e treinamento do modelo.
+tensorflow (versão 2.15.0) e módulo interno keras para construção e treinamento do modelo.
 
 numpy (versão 1.23+) para manipulação de arrays e processamento da saída da inferência.
 
@@ -116,11 +116,11 @@ Foi utilizada a Dynamic Range Quantization (Quantização de Alcance Dinâmico) 
 
 ### 4️⃣ Resultados Obtidos
 
-Acurácia de Validação Final: 0.7420
+Acurácia de Validação Final: 0.7636
 
-Tamanho model.h5: 6212.16 KB
+Tamanho model.h5: 6216.09 KB
 
-Tamanho model.tflite: 532.05 KB
+Tamanho model.tflite: 529.25 KB
 
 ### 5️⃣ Comentários Adicionais (Opcional)
 
@@ -135,6 +135,6 @@ Amostra 1: predito=cat | real=cat
 Amostra 2: predito=ship | real=ship
 Amostra 3: predito=ship | real=ship
 Amostra 4: predito=airplane | real=airplane
-Amostra 5: predito=frog | real=frog
+Amostra 5: predito=deer | real=frog
 
-Comentário: O modelo teve um desempenho excelente nas amostras testadas (100% de acerto nas 5 primeiras imagens), demonstrando que a drástica redução de tamanho (de 6.2MB para ~532KB) com a Dynamic Range Quantization não destruiu a capacidade preditiva da rede para essas classes.
+Comentário: O modelo teve um desempenho de 80% nessas amostras iniciais. É muito interessante analisar o erro ocorrido na Amostra 5, onde a rede confundiu um sapo (frog) com um cervo (deer). Considerando que as imagens do CIFAR-10 possuem resolução baixíssima (32x32) e animais costumam ser fotografados com fundos verdes/natureza, essa confusão de texturas é bastante compreensível para uma CNN simples otimizada por quantização.
